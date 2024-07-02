@@ -1,0 +1,21 @@
+﻿@page
+@model NETMVC.Pages.Klienci.ImportModel
+@{
+}
+
+<h1>Import</h1>
+
+<form enctype="multipart/form-data" method="post">
+    <input type="file" name="UploadedFile"/>
+    <button type="submit" asp-page-handler="Import">Upload File</button>
+</form>
+
+<h1>Export</h1>
+
+<form method="post">
+    <button type="submit" asp-page-handler="ExportCSV">CSV</button>
+</form>
+
+<form method="post">
+    <button type="submit" asp-page-handler="ExportXLSX">XLSX</button>
+</form>
