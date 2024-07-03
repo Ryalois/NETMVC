@@ -8,16 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
 {
-    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-    {
-        var m = Regex.Match(Environment.GetEnvironmentVariable("DATABASE_URL")!, @"postgres://(.*):(.*)@(.*):(.*)/(.*)");
-        options.UseNpgsql($"Server={m.Groups[3]};Port={m.Groups[4]};User Id={m.Groups[1]};Password={m.Groups[2]};Database={m.Groups[5]};sslmode=Prefer;Trust Server Certificate=true");
-    }
-    else // In Development Environment
-    {
-        // So, use a local Connection
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-    }
 });
 
 var app = builder.Build();

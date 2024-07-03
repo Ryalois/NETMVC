@@ -1,17 +1,10 @@
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NETMVC.Models;
-using System.Globalization;
-using CsvHelper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using NETMVC.Models;
 using OfficeOpenXml;
-using System.Text;
+using System.Globalization;
 
 
 namespace NETMVC.Pages.Klienci
@@ -104,46 +97,11 @@ namespace NETMVC.Pages.Klienci
                     surname = worksheet.Cells[row, 2].Value?.ToString(),
                     pesel = worksheet.Cells[row, 3].Value?.ToString(),
                     birthyear = Int32.Parse(worksheet.Cells[row, 4].Value?.ToString()),
-                    p³eæ = Int32.Parse(worksheet.Cells[row, 5].Value?.ToString())
+                    plec = Int32.Parse(worksheet.Cells[row, 5].Value?.ToString())
                 });
             }
             return klienci;
         }
-        /*public async Task<IActionResult> OnPostImportAsync()
-        {
-            if (csv == null || csv.Length == 0)
-            {
-                ModelState.AddModelError("CsvFile", "Please select a CSV file to upload.");
-                Console.WriteLine("Stupid");
-                return Page();
-            }
-
-            var klienci = new List<Klient>();
-
-            using (var reader = new StreamReader(csv.OpenReadStream()))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                klienci = csv.GetRecords<Klient>().ToList();
-                foreach( Klient klient in klienci )
-                {
-                    klient.id = 0;
-                }
-            }
-
-            if (klienci.Any())
-            {
-                await _context.Klienci.AddRangeAsync(klienci);
-                await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
-            }
-            else
-            {
-                ModelState.AddModelError("CsvFile", "The CSV file is empty or improperly formatted.");
-                Console.WriteLine("More Stupid");
-                return Page();
-            }
-        }*/
-
         public async Task<IActionResult> OnPostExportCSVAsync()
         {
             var klienci = await _context.Klienci.ToListAsync();
@@ -172,7 +130,7 @@ namespace NETMVC.Pages.Klienci
             worksheet.Cells[1, 2].Value = "surname";
             worksheet.Cells[1, 3].Value = "pesel";
             worksheet.Cells[1, 4].Value = "birthyear";
-            worksheet.Cells[1, 5].Value = "p³eæ";
+            worksheet.Cells[1, 5].Value = "plec";
 
             // Add data
             for (int i = 0; i < klienci.Count; i++)
@@ -181,7 +139,7 @@ namespace NETMVC.Pages.Klienci
                 worksheet.Cells[i + 2, 2].Value = klienci[i].surname;
                 worksheet.Cells[i + 2, 3].Value = klienci[i].pesel;
                 worksheet.Cells[i + 2, 4].Value = klienci[i].birthyear;
-                worksheet.Cells[i + 2, 5].Value = klienci[i].p³eæ;
+                worksheet.Cells[i + 2, 5].Value = klienci[i].plec;
             }
 
             var content = await package.GetAsByteArrayAsync();

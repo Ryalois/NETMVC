@@ -7,6 +7,6 @@
         public string surname { get; set; }
         public string pesel { get; set; }
         public int birthyear { get; set; }
-        public int płeć { get; set; }
+        public int plec { get; set; }
     }
 }
