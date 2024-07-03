@@ -15,6 +15,9 @@
     <Content Remove="Views\**" />
     <EmbeddedResource Remove="Views\**" />
     <None Remove="Views\**" />
+    <None Include="$(MSBuildProjectDirectory)\Procfile">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
