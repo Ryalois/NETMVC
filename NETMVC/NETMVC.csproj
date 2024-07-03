@@ -6,6 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+	<Target Name="PrePublishTarget" AfterTargets="Publish">
+		<Exec Command="dotnet ef database update" />
+    </Target>
+
   <ItemGroup>
     <Compile Remove="Views\**" />
     <Content Remove="Views\**" />
