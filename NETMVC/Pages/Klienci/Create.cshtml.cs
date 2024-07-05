@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NETMVC.Controllers;
 using NETMVC.Data;
 using NETMVC.Models;
 
@@ -13,10 +14,12 @@ namespace NETMVC.Pages_Klienci
     public class CreateModel : PageModel
     {
         private readonly NETMVC.Data.ApplicationDbContext _context;
+        private KlienciController apiClient;
 
         public CreateModel(NETMVC.Data.ApplicationDbContext context)
         {
             _context = context;
+            apiClient = new KlienciController(context);
         }
 
         public IActionResult OnGet()
@@ -33,9 +36,7 @@ namespace NETMVC.Pages_Klienci
                 return Page();
             }
 
-            _context.Klienci.Add(Klient);
-            await _context.SaveChangesAsync();
-
+            await apiClient.Create(Klient);
             return RedirectToPage("./Index");
         }
     }

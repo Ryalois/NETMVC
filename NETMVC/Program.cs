@@ -1,30 +1,31 @@
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NETMVC.Data;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
 using System.Configuration;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection"));
-});
-
-// Add these lines for Swagger
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
+
+builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -33,7 +34,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -43,16 +43,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
-app.MapGet("/api/Index", () => "Hello. My secret");
-app.MapGet("/api/Create", () => "Hello, World!");
-app.MapGet("/api/Delte", () => "Hello, World!");
-app.MapGet("/api/Edit", () => "Hello, World!");
-app.MapGet("/api/Import", () => "Hello, World!");
-app.MapGet("/api/ExportCSV", () => "Hello, World!");
-app.MapGet("/api/ExportXLSX", () => "Hello, World!");
-
-// Add this line to enable Swagger JSON endpoint
+app.MapControllers();
 app.MapSwagger();
 
 app.Run();

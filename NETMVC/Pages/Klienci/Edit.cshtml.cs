@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NETMVC.Controllers;
 using NETMVC.Data;
 using NETMVC.Models;
 
@@ -14,10 +15,12 @@ namespace NETMVC.Pages_Klienci
     public class EditModel : PageModel
     {
         private readonly NETMVC.Data.ApplicationDbContext _context;
+        private KlienciController apiClient;
 
         public EditModel(NETMVC.Data.ApplicationDbContext context)
         {
             _context = context;
+            apiClient = new KlienciController(context);
         }
 
         [BindProperty]
@@ -25,12 +28,7 @@ namespace NETMVC.Pages_Klienci
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var klient =  await _context.Klienci.FirstOrDefaultAsync(m => m.id == id);
+            var klient = await apiClient.DetailsGet(id);
             if (klient == null)
             {
                 return NotFound();
@@ -39,8 +37,6 @@ namespace NETMVC.Pages_Klienci
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -48,30 +44,9 @@ namespace NETMVC.Pages_Klienci
                 return Page();
             }
 
-            _context.Attach(Klient).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!KlientExists(Klient.id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await apiClient.Edit(Klient);
 
             return RedirectToPage("./Index");
-        }
-
-        private bool KlientExists(int id)
-        {
-            return _context.Klienci.Any(e => e.id == id);
         }
     }
 }
